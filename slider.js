@@ -40,7 +40,14 @@ class ScriptLoader {
         })
     }
 }
-async function ProductSlider({apiKey, backgroundURL, rootID, sliderType, sliderPerView, enablePreview, enableAutoHover, hideTitle, bgToAll, hidePrice, imageLogo, allButton}) {
+async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5options, sliderPerView, enablePreview, enableAutoHover, hideTitle, priceColor, hidePrice, imageLogo, allButton}) {
+    /*
+    * Type = 1 -> дефолтный - 4 товара друг за другом идет
+    * Type = 2 -> два товара друг под другом
+    * Type = 3 -> 3 товара с правой стороны (1 вверху, 2рядом внизу)
+    * Type = 4 -> 2 товара с правой стороны (1 вверху, 1 внизу)
+    * Type = 5 -> Просто кнопка
+    */
     if (typeof $ !== 'function') {
         const jqLoad = new ScriptLoader({
             src: 'code.jquery.com/jquery-3.6.1.min.js',
@@ -49,16 +56,20 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType, sliderP
         await jqLoad.load();
     }
     let body = $('body');
-    if (typeof Swiper !== 'function') {
-        body.append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>');
-        body.append('<link rel="stylesheet" href="https://printlean.com/widgets/slider-style.css"/>');
-        const swiperLoad = new ScriptLoader({
-            src: 'cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js',
-            global: 'swiper',
-        })
-        await swiperLoad.load();
-    }
+    // body.append('<link rel="stylesheet" href="https://printlean.com/widgets/slider-style.css"/>');
+    body.append('<link rel="stylesheet" href="/slider-style.css"/>');
+    if (sliderType !== 5) {
 
+        if (typeof Swiper !== 'function') {
+            body.append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>');
+
+            const swiperLoad = new ScriptLoader({
+                src: 'cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js',
+                global: 'swiper',
+            })
+            await swiperLoad.load();
+        }
+    }
     var target = $('#'+rootID);
     if (!target.length) {
         return false;
@@ -78,6 +89,25 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType, sliderP
     if (sliderPerView[1200] && sliderPerView[1200] >= 5) {
         className = 'name-smaller'
     }
+    $(document).on('click','.js-show-all-products',function(){
+        $('#modal-swiper, #modal-swiper-bg').remove();
+        var modal = '<div id="modal-swiper-bg"></div><div id="modal-swiper"><iframe src="https://printlean.com/?api-key='+apiKey+'&photo='+backgroundURL+'"></iframe></div>';
+        body.after(modal);
+        $('#modal-swiper').prepend('<div id="modal-swiper-close"></div>');
+    });
+
+    $(document).on('click','#modal-swiper-bg, #modal-swiper-close',function(){
+        $('#modal-swiper, #modal-swiper-bg').remove();
+    });
+
+    if (sliderType === 5) {
+        var color = type5options.color ? type5options.color : '#ffffff';
+        var bgColor = type5options.bgColor ? type5options.bgColor : '#333333';
+        var buttontext = type5options.buttonText ? type5options.buttonText : 'Print with';
+        var btn = `<span class="js-show-all-products" style="background-color: ${bgColor}; cursor: pointer; color: ${color}; display: inline-block;text-decoration: none; border: 1px solid ${bgColor}; user-select: none;padding: 10px 25px; border-radius: 100px;">${buttontext} <img style="max-height: 36px; vertical-align: middle; margin-left: 6px; display: inline-block;" src="https://printlean.com/images/logo.png" alt=""></span>`
+        target.append(btn);
+        return;
+    }
     var slider = '<div class="swiper products-slider js-products-swiper '+className+'"><div class="swiper-wrapper"></div></div><div class="swiper-button-prev product-slider__prev-btn"> <svg width="9" height="13" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M0.794819 6.5C0.794819 6.73299 0.883779 6.96595 1.06132 7.14358L6.65109 12.7333C7.00667 13.0889 7.58317 13.0889 7.93861 12.7333C8.29404 12.3779 8.29404 11.8015 7.93861 11.4458L2.99248 6.50001L7.93844 1.55413C8.29387 1.19855 8.29387 0.622217 7.93844 0.266812C7.583 -0.0889387 7.00649 -0.0889388 6.65091 0.266812L1.06115 5.85643C0.883577 6.03415 0.794819 6.26711 0.794819 6.5Z" fill="white"/> </svg> </div><div class="swiper-button-next product-slider__next-btn"> <svg width="9" height="13" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M0.794819 6.5C0.794819 6.73299 0.883779 6.96595 1.06132 7.14358L6.65109 12.7333C7.00667 13.0889 7.58317 13.0889 7.93861 12.7333C8.29404 12.3779 8.29404 11.8015 7.93861 11.4458L2.99248 6.50001L7.93844 1.55413C8.29387 1.19855 8.29387 0.622217 7.93844 0.266812C7.583 -0.0889387 7.00649 -0.0889388 6.65091 0.266812L1.06115 5.85643C0.883577 6.03415 0.794819 6.26711 0.794819 6.5Z" fill="white"/> </svg> </div>';
     if (sliderType === 1 || sliderType === 2) {
         slider = '<div class="slider-wrapper">' + slider + '</div>';
@@ -92,13 +122,6 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType, sliderP
     target.append(slider);
     target.addClass('product-slider product-slider--type-'+sliderType);
     target.wrapInner('.products-slider-wrapper')
-
-    /*
-    * Type = 1 -> дефолтный - 4 товара друг за другом идет
-    * Type = 2 -> два товара друг под другом
-    * Type = 3 -> 3 товара с правой стороны (1 вверху, 2рядом внизу)
-    * Type = 4 -> 2 товара с правой стороны (1 вверху, 1 внизу)
-    * */
     document.documentElement.style.setProperty('--bg-url', 'url("'+backgroundURL+'")');
     var breakpoints = {
         320: {
@@ -196,28 +219,18 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType, sliderP
         $(document).on('click','.product-slide',function(){
             var id = $(this).attr('data-id');
             $('#modal-swiper, #modal-swiper-bg').remove();
-            var modal = '<div id="modal-swiper-bg"></div><div id="modal-swiper"><iframe src="https://printlean.com/products/all/?api-key='+apiKey+'&photo='+backgroundURL+'"></iframe></div>';
-            body.after(modal);
-            $('#modal-swiper').prepend('<div id="modal-swiper-close"></div>');
-        });
-        $(document).on('click','.js-show-all-products',function(){
-            var id = $(this).attr('data-id');
-            $('#modal-swiper, #modal-swiper-bg').remove();
             var modal = '<div id="modal-swiper-bg"></div><div id="modal-swiper"><iframe src="https://printlean.com/product/'+id+'?api-key='+apiKey+'&photo='+backgroundURL+'"></iframe></div>';
             body.after(modal);
             $('#modal-swiper').prepend('<div id="modal-swiper-close"></div>');
         });
-        $(document).on('click','#modal-swiper-bg, #modal-swiper-close',function(){
-            $('#modal-swiper, #modal-swiper-bg').remove();
-        });
-        let adsBy = `<div style="margin: 25px 0; text-align: right; color: gray; font-family: Montserrat,sans-serif;">Ads by <a style="text-decoration: none; color: inherit; font-family: inherit" href="https://affiliate.printlean.com/">Printlean.com</a></div>`;
+        let adsBy = `<div style="user-select: none; margin: 25px 0; text-align: right; color: gray; font-family: Montserrat,sans-serif;">Ads by <a style="text-decoration: none; color: inherit; font-family: inherit" href="https://affiliate.printlean.com/">Printlean.com</a></div>`;
         if (imageLogo) {
-            adsBy = `<div style="margin: 25px 0; text-align: center; color: gray; font-family: Montserrat,sans-serif;">Powered by <a style="text-decoration: none; color: inherit; font-family: inherit" href="https://affiliate.printlean.com/"><img style="height: 36px;;" src="https://printlean.com/images/logo_dark.png" alt=""></a></div>`;
+            adsBy = `<div style="user-select: none; margin: 25px 0; text-align: center; color: gray; font-family: Montserrat,sans-serif; vertical-align: middle;">Powered by <a style="vertical-align: middle; text-decoration: none; color: inherit; font-family: inherit" href="https://affiliate.printlean.com/"><img style="height: 36px; vertical-align: middle;;" src="https://printlean.com/images/logo_dark.png" alt=""></a></div>`;
         }
         $(adsBy).insertAfter(target);
         if (allButton) {
             let color = allButton.buttonColor ? allButton.buttonColor : '#5ab6f8';
-            let buttonHtml = `<div style="margin: 25px 0; text-align: center; font-family: Montserrat,sans-serif;"><a href="javascript:void('0')" class="js-show-all-products" style="color: ${color};;display: inline-block;text-decoration: none;border: 1px solid ${color};padding: 10px 25px; border-radius: 100px;">${allButton.buttonText ? allButton.buttonText : 'See All Products'}</a></div>`;
+            let buttonHtml = `<div style="vertical-align: middle; margin: 25px 0; text-align: center; font-family: Montserrat,sans-serif;"><a href="javascript:void('0')" class="js-show-all-products" style="color: ${color};;display: inline-block;text-decoration: none;border: 1px solid ${color}; user-select: none;padding: 10px 25px; border-radius: 100px;">${allButton.buttonText ? allButton.buttonText : 'See All Products'}</a></div>`;
             $(buttonHtml).insertAfter(target);
         }
     });
@@ -288,7 +301,7 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType, sliderP
                 </div>`;
             }
             if (!hidePrice) {
-                $slide +=  `<div class="product-slide__price">
+                $slide +=  `<div class="product-slide__price" style="color: ${priceColor ? priceColor : '#d04747'}">
                     ${slide.price ? '$'+slide.price : ''}
                 </div>`;
             }
