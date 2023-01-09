@@ -103,7 +103,7 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
     if (sliderType === 5) {
         var color = type5options.color ? type5options.color : '#ffffff';
         var bgColor = type5options.bgColor ? type5options.bgColor : '#333333';
-        var buttontext = type5options.buttonText ? type5options.buttonText : 'Print with';
+        var buttontext = type5options.buttonText ? type5options.enablePreview : 'Print with';
         var btn = `<span class="js-show-all-products" style="background-color: ${bgColor}; cursor: pointer; color: ${color}; display: inline-block;text-decoration: none; border: 1px solid ${bgColor}; user-select: none;padding: 10px 25px; border-radius: 100px;">${buttontext} <img style="max-height: 36px; vertical-align: middle; margin-left: 6px; display: inline-block;" src="https://printlean.com/images/logo.png" alt=""></span>`
         target.append(btn);
         return;
