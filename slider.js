@@ -40,7 +40,7 @@ class ScriptLoader {
         })
     }
 }
-async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5options, sliderPerView, enablePreview, enableAutoHover, hideTitle, priceColor, hidePrice, imageLogo, allButton}) {
+async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5options, sliderPerView, enablePreview, enableAutoHover, hideTitle, priceColor, hidePrice, imageLogo, allButton, fontSizeName, fontSizePrice, titleColor}) {
     /*
     * Type = 1 -> дефолтный - 4 товара друг за другом идет
     * Type = 2 -> два товара друг под другом
@@ -296,13 +296,16 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
                 <img src="https://printlean.com/${slide.photo}" alt="${slide.name}">
             </div>
             <div class="product-slide__content">`;
+            var $fzName = fontSizeName ? fontSizeName : false;
+            var $fzPrice = fontSizePrice ? fontSizePrice : false;
+
             if (!hideTitle) {
-                $slide +=  `<div class="product-slide__name">
+                $slide +=  `<div class="product-slide__name" style="font-size: ${$fzName}px;color: ${titleColor ? titleColor : '#383838'}">
                     ${slide.name}
                 </div>`;
             }
             if (!hidePrice) {
-                $slide +=  `<div class="product-slide__price" style="color: ${priceColor ? priceColor : '#d04747'}">
+                $slide +=  `<div class="product-slide__price" style="font-size: ${$fzPrice}px; color: ${priceColor ? priceColor : '#d04747'}">
                     ${slide.price ? '$'+slide.price : ''}
                 </div>`;
             }

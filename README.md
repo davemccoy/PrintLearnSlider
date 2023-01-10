@@ -18,6 +18,9 @@
 - hidePrice - hide price from product cards
 - imageLogo - show image in credits 
 - allButton - show all button 
+- fontSizeName - font size for product name 
+- fontSizePrice - font size for product price
+- titleColor - title color
 ```javascript
 ProductSlider({
     rootID: 'productSlider',
