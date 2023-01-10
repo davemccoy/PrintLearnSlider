@@ -165,8 +165,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 50px;
-        height: 50px;
+        width: 50px !important;
+        height: 50px !important;
         border-radius: 50px;
         background: #5ab6f8;
         box-shadow: 0 4px 20px rgba(57, 137, 211, 0.35);
@@ -215,6 +215,8 @@
     box-shadow: 0 10px 30px rgba(216, 216, 216, 0.25);
     border-radius: 10px;
     overflow: hidden;
+    max-width: 100%;
+    cursor: pointer;
     &:hover {
         .product-slide__image {
             background: var(--bg-url) center no-repeat;
@@ -235,6 +237,7 @@
         align-items: center;
         justify-content: center;
         margin: 0 auto 13px auto;
+        max-width: 100%;
         img {
             width: $width;
             height: $width + 2px;
@@ -370,4 +373,13 @@
     height: 100%;
     width: 100%;
     border: 0;
+}
+
+#modal-swiper-close {
+    position: fixed;
+    right: 24px;
+    top: 42px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
 }
