@@ -56,8 +56,8 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
         await jqLoad.load();
     }
     let body = $('body');
-    body.append('<link rel="stylesheet" href="https://printlean.com/widgets/slider-style.css"/>');
-    // body.append('<link rel="stylesheet" href="/slider-style.css"/>');
+    // body.append('<link rel="stylesheet" href="https://printlean.com/widgets/slider-style.css"/>');
+    body.append('<link rel="stylesheet" href="/slider-style.css"/>');
     if (sliderType !== 5) {
 
         if (typeof Swiper !== 'function') {
@@ -104,7 +104,7 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
         type5options = type5options || false;
         var color = (type5options && type5options.color) ? type5options.color : '#ffffff';
         var bgColor = (type5options && type5options.bgColor) ? type5options.bgColor : '#333333';
-        var buttontext = (type5options && type5options.buttonText) ? type5options.enablePreview : 'Print with';
+        var buttontext = (type5options && type5options.buttonText) ? type5options.buttonText : 'Print with';
         var btn = `<span class="js-show-all-products" style="background-color: ${bgColor}; cursor: pointer; color: ${color}; display: inline-block;text-decoration: none; border: 1px solid ${bgColor}; user-select: none;padding: 10px 25px; border-radius: 100px;">${buttontext} <img style="max-height: 36px; vertical-align: middle; margin-left: 6px; display: inline-block;" src="https://printlean.com/images/logo.png" alt=""></span>`
         target.append(btn);
         return;
@@ -208,11 +208,9 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
             watchSlidesProgress: true,
             on: {
                 init: function (swiper) {
-                    if (enableAutoHover) {
-                        if (typeof enableAutoHover == 'boolean') {
-                            autoHoverStart();
-                            hoverSlide();
-                        }
+                    if (enableAutoHover && (typeof enableAutoHover == 'boolean')) {
+                        autoHoverStart();
+                        hoverSlide();
                     }
                 },
             },
@@ -241,7 +239,7 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
     function autoHoverStart() {
         hoverTimeout = setInterval(function () {
             let slides = [...document.querySelectorAll('.js-products-swiper .swiper-slide.swiper-slide-visible')];
-            if (sliderType === 3 || sliderType === 4) {
+            if (sliderType === 2 || sliderType === 3 || sliderType === 4) {
                 slides = [...document.querySelectorAll('.js-products-swiper .swiper-slide.swiper-slide-visible .product-slide')];
             }
 
