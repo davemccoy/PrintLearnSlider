@@ -56,8 +56,8 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
         await jqLoad.load();
     }
     let body = $('body');
-    // body.append('<link rel="stylesheet" href="https://printlean.com/widgets/slider-style.css"/>');
-    body.append('<link rel="stylesheet" href="/slider-style.css"/>');
+    body.append('<link rel="stylesheet" href="https://printlean.com/widgets/slider-style.css"/>');
+    // body.append('<link rel="stylesheet" href="/slider-style.css"/>');
     if (sliderType !== 5) {
 
         if (typeof Swiper !== 'function') {
