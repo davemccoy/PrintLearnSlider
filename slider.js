@@ -195,7 +195,6 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
             slide += `</div>`;
             target.find('.swiper-wrapper').append(slide);
         });
-        console.log(target.find('.product-slider__next-btn'));
         let productsSlider = new Swiper('#'+rootID+' .js-products-swiper', {
             slidesPerView: 4,
             spaceBetween: 17,
