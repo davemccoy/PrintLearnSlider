@@ -40,7 +40,7 @@ class ScriptLoader {
         })
     }
 }
-async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5options, sliderPerView, enablePreview, enableAutoHover, hideTitle, priceColor, hidePrice, imageLogo, allButton, fontSizeName, fontSizePrice, titleColor}) {
+async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5options, sliderPerView, enablePreview, enableAutoHover, hideTitle, priceColor, hidePrice, imageLogo, allButton, fontSizeName, fontSizePrice, titleColor, linktype}) {
     /*
     * Type = 1 -> дефолтный - 4 товара друг за другом идет
     * Type = 2 -> два товара друг под другом
@@ -214,13 +214,28 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
                 },
             },
         });
-        $(document).on('click','.product-slide',function(){
-            var id = $(this).attr('data-id');
-            $('#modal-swiper, #modal-swiper-bg').remove();
-            var modal = '<div id="modal-swiper-bg"></div><div id="modal-swiper"><iframe src="https://printlean.com/product/'+id+'?api-key='+apiKey+'&photo='+backgroundURL+'"></iframe></div>';
-            body.after(modal);
-            $('#modal-swiper').prepend('<div id="modal-swiper-close"></div>');
-        });
+        if (!linktype || linktype === 'frame' || linktype !== 'new' || linktype !== 'same') {
+            $(document).on('click','.product-slide',function(){
+                var id = $(this).attr('data-id');
+                $('#modal-swiper, #modal-swiper-bg').remove();
+                var modal = '<div id="modal-swiper-bg"></div><div id="modal-swiper"><iframe src="https://printlean.com/product/'+id+'?api-key='+apiKey+'&photo='+backgroundURL+'"></iframe></div>';
+                body.after(modal);
+                $('#modal-swiper').prepend('<div id="modal-swiper-close"></div>');
+            });
+        }
+        if (linktype === 'new') {
+            $(document).on('click','.product-slide',function(){
+                var id = $(this).attr('data-id');
+                window.open('https://printlean.com/product/'+id+'?api-key='+apiKey+'&photo='+backgroundURL, '_blank').focus();
+            });
+        }
+        if (linktype === 'same') {
+            $(document).on('click','.product-slide',function(){
+                var id = $(this).attr('data-id');
+                document.location.href = 'https://printlean.com/product/'+id+'?api-key='+apiKey+'&photo='+backgroundURL
+            });
+        }
+
         let adsBy = `<div style="user-select: none; margin: 25px 0; text-align: right; color: gray; font-family: Montserrat,sans-serif;">Ads by <a style="text-decoration: none; color: inherit; font-family: inherit" href="https://affiliate.printlean.com/">Printlean.com</a></div>`;
         if (imageLogo) {
             adsBy = `<div style="user-select: none; margin: 25px 0; text-align: center; color: gray; font-family: Montserrat,sans-serif; vertical-align: middle;">Powered by <a style="vertical-align: middle; text-decoration: none; color: inherit; font-family: inherit" href="https://affiliate.printlean.com/"><img style="height: 36px; vertical-align: middle;;" src="https://printlean.com/images/logo_dark.png" alt=""></a></div>`;
@@ -293,20 +308,20 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
                 <img src="https://printlean.com/${slide.photo}" alt="${slide.name}">
             </div>
             <div class="product-slide__content">`;
-            var $fzName = fontSizeName ? fontSizeName : false;
-            var $fzPrice = fontSizePrice ? fontSizePrice : false;
+        var $fzName = fontSizeName ? fontSizeName : false;
+        var $fzPrice = fontSizePrice ? fontSizePrice : false;
 
-            if (!hideTitle) {
-                $slide +=  `<div class="product-slide__name" style="font-size: ${$fzName}px;color: ${titleColor ? titleColor : '#383838'}">
+        if (!hideTitle) {
+            $slide +=  `<div class="product-slide__name" style="font-size: ${$fzName}px;color: ${titleColor ? titleColor : '#383838'}">
                     ${slide.name}
                 </div>`;
-            }
-            if (!hidePrice) {
-                $slide +=  `<div class="product-slide__price" style="font-size: ${$fzPrice}px; color: ${priceColor ? priceColor : '#d04747'}">
+        }
+        if (!hidePrice) {
+            $slide +=  `<div class="product-slide__price" style="font-size: ${$fzPrice}px; color: ${priceColor ? priceColor : '#d04747'}">
                     ${slide.price ? '$'+slide.price : ''}
                 </div>`;
-            }
-            $slide += `</div>
+        }
+        $slide += `</div>
         </div>`;
         return $slide
     }
