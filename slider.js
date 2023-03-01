@@ -89,11 +89,16 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
     if (sliderPerView[1200] && sliderPerView[1200] >= 5) {
         className = 'name-smaller'
     }
-    $(document).on('click','.js-show-all-products',function(){
-        $('#modal-swiper, #modal-swiper-bg').remove();
-        var modal = '<div id="modal-swiper-bg"></div><div id="modal-swiper"><iframe src="https://printlean.com/?api-key='+apiKey+'&photo='+backgroundURL+'"></iframe></div>';
-        body.after(modal);
-        $('#modal-swiper').prepend('<div id="modal-swiper-close"></div>');
+    $(document).on('click','.js-show-all-products',function() {
+        if (linktype === 'new') {
+            window.open('https://printlean.com/?api-key='+apiKey+'&photo='+backgroundURL, '_blank');
+        } else {
+            $('#modal-swiper, #modal-swiper-bg').remove();
+            var modal = '<div id="modal-swiper-bg"></div><div id="modal-swiper"><iframe src="https://printlean.com/?api-key='+apiKey+'&photo='+backgroundURL+'"></iframe></div>';
+            body.after(modal);
+            $('#modal-swiper').prepend('<div id="modal-swiper-close"></div>');
+        }
+
     });
 
     $(document).on('click','#modal-swiper-bg, #modal-swiper-close',function(){
@@ -214,7 +219,7 @@ async function ProductSlider({apiKey, backgroundURL, rootID, sliderType,type5opt
                 },
             },
         });
-        if (!linktype || linktype === 'frame' || linktype !== 'new' || linktype !== 'same') {
+        if (!linktype || linktype === 'frame') {
             $(document).on('click','.product-slide',function(){
                 var id = $(this).attr('data-id');
                 $('#modal-swiper, #modal-swiper-bg').remove();
